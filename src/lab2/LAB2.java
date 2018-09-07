@@ -2,6 +2,7 @@ package lab2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -30,25 +31,19 @@ public class LAB2 {
                 String phoneNumber = line[4];
                 String email = line[5];
                 
-                
-                if(validateName(firstName) == false) {
-                    System.out.println("ERROR UNVALID FIRST NAME: " + firstName );
+                if(!validateName(firstName) || !validateName(lastName)) {
                     continue;
                 }
-                else if(validateName(lastName) == false) {
-                    System.out.println("ERROR UNVALID LAST NAME: " + lastName );
+                if(!validateGender(gender)) {
                     continue;
                 }
-                 else if(validateGender(gender) == false) {
-                    System.out.println("ERROR UNVALID GENDER: " + gender );
+                if(!validateAge(age)) {
                     continue;
                 }
-                 else if(validateName(age) == false) {
-                    System.out.println("ERROR UNVALID AGE: " + age );
+                if(!validatePhoneNumber(phoneNumber)) {
                     continue;
                 }
-                else if(validateName(phoneNumber) == false) {
-                    System.out.println("ERROR UNVALID PHONENUMBER: " + phoneNumber );
+                if(!validateEmail(email)) {
                     continue;
                 }
                 
@@ -76,8 +71,10 @@ public class LAB2 {
     public static boolean validateName(String name) {
         
         char[] nameArr = name.toCharArray();
+        
         for(int i = 0; i < name.length(); i++ ) {
-            if(Character.isDigit(nameArr[i])) {
+            if(!Character.isAlphabetic(nameArr[i]) && nameArr[i] != ' ') {
+                System.out.println("ERROR: INVALID NAME, INVALID CHARACTER FOUND - " + name);
                 return false;
             }
         }
@@ -86,26 +83,38 @@ public class LAB2 {
     }
     
     public static boolean validateGender(String gender) {
-        if(gender.equalsIgnoreCase("male") == true || gender.equalsIgnoreCase("female") == true) {
+        
+        gender = gender.replaceAll(" ", ""); //gender has a space in the front of it when read.
+        
+        if(gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("female")) {
             return true;
         }
         else {
+            System.out.println("ERROR: INVALID GENDER, INVALID GENDER VALUE - " + gender);
             return false;
         }
     }
     
     public static boolean validateAge(String age) {
         
+        if(age.equals("")) {
+            System.out.println("ERROR: INVALID AGE, AGE NOT A NUMBER - " + age);
+            return false;
+        }
         int ageInt = Integer.parseInt(age);
         
-        return 1 <= ageInt && ageInt <= 130;
-      
+        if(1 <= ageInt && ageInt <= 130) {
+            return true;
+        }
+
+        System.out.println("ERROR: INVALID AGE, AGE OUT OF RANGE - " + age);
+        return false;
+        
     }
     
+    //TODO: CHECK THIS METHOD
     public static boolean validatePhoneNumber(String phoneNumber) {
         
-     
-   
         char[] phoneNumberArr = phoneNumber.toCharArray();
         int countDigits = 0;
         
@@ -115,11 +124,42 @@ public class LAB2 {
             }
         }
         
-        return countDigits == 10;
+        if(countDigits != 10) {
+           System.out.println("ERROR: INVALID PHONE NUMBER - " + phoneNumber);
+           return false;
+        } 
+       
+        return true;
     }
     
     public static boolean validateEmail(String email) {
-        //FINISH LATER.
+        
+        char[] emailArr = email.toCharArray();
+        boolean containsAtSymbol = false;
+        
+        if(!Character.isLetter(emailArr[0])) {
+            System.out.println("ERROR: INVALID EMAIL,FIRST LETTER NOT LETTER - " + email);
+            return false;
+        }
+        
+        for(int i = 0; i < emailArr.length; i++) {
+            
+            if(emailArr[i] == '@') {
+                containsAtSymbol = true;
+                continue;
+            }
+            
+            if(!Character.isLetterOrDigit(emailArr[i]) && emailArr[i] != '.') {
+                System.out.println("ERROR: INVALID EMAIL - " + email);
+                return false;
+            }
+            else if(emailArr[i] == '.') {
+                continue;
+            }
+            
+            
+        }
+        
         return true;
     }
 }
